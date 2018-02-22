@@ -16,3 +16,4 @@ And then...
 ```
 npm start
 ```
+![Demo Image](https://i.imgur.com/q4ZmKKX.jpg)
