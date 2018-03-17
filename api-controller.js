@@ -3,7 +3,8 @@ const request = require('request')
 module.exports = {
   // Find Stats off of the args sent
   stats: function(msg, args){
-    const platform = args[0]
+    let platform = args[0]
+    if(platform) platform = platform.toLowerCase()
     const username = args.slice(1,args.length).join('%20')
 
     if(platform !== 'psn' && platform !== 'pc' && platform !== 'xbl' || platform === undefined){
@@ -44,10 +45,13 @@ module.exports = {
         data = JSON.parse(body)
         let soloWins = 0
         let soloTime = '0h 0m'
+        let soloKd = 0
         let duoWins = 0
         let duoTime = '0h 0m'
+        let duoKd = 0
         let squadWins = 0
         let squadTime = '0h 0m'
+        let squadKd = 0
 
         // Player Not Found
         if(data.error){
@@ -59,18 +63,21 @@ module.exports = {
         if(data.stats.p2){
           soloWins = data.stats.p2.top1.displayValue
           soloTime = data.stats.p2.minutesPlayed.displayValue
+          soloKd = data.stats.p2.kd.valueDec
         }
 
         // Duos
         if(data.stats.p10){
           duoWins = data.stats.p10.top1.displayValue
           duoTime = data.stats.p10.minutesPlayed.displayValue
+          duoKd = data.stats.p10.kd.valueDec
         }
         
-        // Squad Wins
+        // Squad 
         if(data.stats.p9){
           squadWins = data.stats.p9.top1.displayValue
           squadTime = data.stats.p9.minutesPlayed.displayValue
+          squadKd = data.stats.p9.kd.valueDec
         }
 
         // The most important line of code.
@@ -78,10 +85,10 @@ module.exports = {
 
         msg.reply(`
         Stats for ${user} on ${platform}:
-        Gametype | # of Wins | Time Played
-        Solo | ${soloWins} | ${soloTime}
-        Duo | ${duoWins} | ${duoTime}
-        Squad | ${squadWins} | ${squadTime}
+        Gametype | # of Wins | Time Played | KD Ratio
+        Solo | ${soloWins} | ${soloTime} | ${soloKd}
+        Duo | ${duoWins} | ${duoTime} | ${duoKd}
+        Squad | ${squadWins} | ${squadTime} | ${squadKd}
 
         Source: FORTNITE TRACKER - https://fortnitetracker.com/
         `)
